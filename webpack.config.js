@@ -4,6 +4,7 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CopyPlugin = require("copy-webpack-plugin");
 const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
+const Dotenv = require("dotenv-webpack");
 
 module.exports = {
   entry: "./src/index.js",
@@ -14,6 +15,12 @@ module.exports = {
   },
   resolve: {
     extensions: [".js"],
+    alias: {
+      "@utils": path.resolve(__dirname, "src/utils/"),
+      "@templates": path.resolve(__dirname, "src/templates/"),
+      "@styles": path.resolve(__dirname, "src/styles/"),
+      "@images": path.resolve(__dirname, "src/assets/images/"),
+    },
   },
   module: {
     rules: [
@@ -41,7 +48,7 @@ module.exports = {
             mimetype: "application/font-woff",
             name: "[name].[contenthash].[ext]",
             outputPath: "./assets/fonts/",
-            publicPath: "./assets/fonts/",
+            publicPath: "../assets/fonts/",
             esModule: false,
           },
         },
@@ -55,7 +62,7 @@ module.exports = {
       filename: "./index.html",
     }),
     new MiniCssExtractPlugin({
-      filename: 'assets/[name].[contenthash].css'
+      filename: "assets/[name].[contenthash].css",
     }),
     new CopyPlugin({
       patterns: [
@@ -65,12 +72,10 @@ module.exports = {
         },
       ],
     }),
+    new Dotenv(),
   ],
   optimization: {
     minimize: true,
-    minimizer: [
-      new CssMinimizerPlugin(),
-      new TerserPlugin()
-    ]
+    minimizer: [new CssMinimizerPlugin(), new TerserPlugin()],
   },
 };
